@@ -14,6 +14,8 @@ root.title("GAMD Chapter 13 Calculator")
 
 countyformatted = StringVar()
 countyformatted.set("Bibb County")
+comittmentperiodformatted = DoubleVar()
+comittmentperiodformatted.set("0")
 meansteststatusformatted = StringVar()
 maritalfilingstatussinglesingleformatted = IntVar()
 maritalfilingstatusmarriedsingleformatted = IntVar()
@@ -80,7 +82,7 @@ car1910statusformatted.set("No")
 car2valueformatted = DoubleVar()
 car2valueformatted.set("15000.00")
 car2plantreatmentformatted = StringVar()
-car2plantreatmentformatted.set("")
+car2plantreatmentformatted.set("Pay")
 car2loanqueryformatted = StringVar()
 car2loanqueryformatted.set("Yes")
 car2loannameformatted = StringVar()
@@ -213,10 +215,34 @@ monthlydisposableincomeformatted = DoubleVar()
 monthlydisposableincomeformatted.set("0.00")
 planlongtermdebtarrearspaymentformatted = DoubleVar()
 planlongtermdebtarrearspaymentformatted.set("0.00")
-plansecurednocramdownformatted = DoubleVar()
-plansecurednocramdownformatted.set("0.00")
-plansecuredcramdownformatted = DoubleVar()
-plansecuredcramdownformatted.set("0.00")
+plansecurednocramdowntotalformatted = DoubleVar()
+plansecurednocramdowntotalformatted.set("0.00")
+plansecurednocramdowncar1formatted = DoubleVar()
+plansecurednocramdowncar1formatted.set("0.00")
+plansecurednocramdowncar2formatted = DoubleVar()
+plansecurednocramdowncar2formatted.set("0.00")
+plansecurednocramdownclaim1formatted = DoubleVar()
+plansecurednocramdownclaim1formatted.set("0.00")
+plansecurednocramdownclaim2formatted = DoubleVar()
+plansecurednocramdownclaim2formatted.set("0.00")
+plansecurednocramdownclaim3formatted = DoubleVar()
+plansecurednocramdownclaim3formatted.set("0.00")
+plansecurednocramdownclaim4formatted = DoubleVar()
+plansecurednocramdownclaim4formatted.set("0.00")
+plansecuredcramdowntotalformatted = DoubleVar()
+plansecuredcramdowntotalformatted.set("0.00")
+plansecuredcramdowncar1formatted = DoubleVar()
+plansecuredcramdowncar1formatted.set("0.00")
+plansecuredcramdowncar2formatted = DoubleVar()
+plansecuredcramdowncar2formatted.set("0.00")
+plansecuredcramdownclaim1formatted = DoubleVar()
+plansecuredcramdownclaim1formatted.set("0.00")
+plansecuredcramdownclaim2formatted = DoubleVar()
+plansecuredcramdownclaim2formatted.set("0.00")
+plansecuredcramdownclaim3formatted = DoubleVar()
+plansecuredcramdownclaim3formatted.set("0.00")
+plansecuredcramdownclaim4formatted = DoubleVar()
+plansecuredcramdownclaim4formatted.set("0.00")
 planattorneysfeesformatted = DoubleVar()
 planattorneysfeesformatted.set("0.00")
 plantrusteefeesformatted = DoubleVar()
@@ -227,6 +253,12 @@ plangeneralunsecuredclaimsformatted = DoubleVar()
 plangeneralunsecuredclaimsformatted.set("0.00")
 plangeneralunsecuredclaimsbasisformatted = StringVar()
 plangeneralunsecuredclaimsbasisformatted.set("(None)")
+plangeneralunsecuredclaimsdividendformatted = DoubleVar()
+plangeneralunsecuredclaimsdividendformatted.set("0.00")
+plangeneralunsecuredclaimspercentageformatted = DoubleVar()
+plangeneralunsecuredclaimspercentageformatted.set("0.0")
+plangeneralunsecuredclaimspercentagebasisformatted = StringVar()
+plangeneralunsecuredclaimspercentagebasisformatted.set("N/A")
 plantotalmonthlycostformatted = DoubleVar()
 plantotalmonthlycostformatted.set("0.00")
 
@@ -422,6 +454,8 @@ def unlock0():
     schedulejline22clabel.config(state="normal")
 
 def unlock1():
+    applicablecomittmentperiod60m.config(state="normal")
+    applicablecomittmentperioddefined.config(state="normal")
     meanstestfoodclothingandotheritemslabel.config(state="normal")
     meanstestoutofpockethealthcarelabel.config(state="normal")
     meanstesthousingandutilitiesinsuranceandoperatinglabel.config(state="normal")
@@ -799,6 +833,10 @@ def form122c2():
 
         monthlydisposableincomeformatted.set(mdi)
 
+        if mdi <= 0:
+            abovemedian = "No"
+            meansteststatuslabel.config(background="green", text="BELOW MEDIAN")
+            comittmentperiodformatted.set("36")
 
         cmirestatedentry.config(state="readonly")
         cmirestatedlabel.config(state="normal")
@@ -843,10 +881,13 @@ def form122c1():
     elif medianincome == 0:
         abovemedian = "No"
         meansteststatuslabel.config(background="green", text="BELOW MEDIAN")
+        comittmentperiodformatted.set("36")
+        applicablecomittmentperioddefined.config(state="normal")
     elif medianincome <= (float(currentmonthlyincomeformatted.get()) * float(12)):
         abovemedian = "Yes"
         meansteststatuslabel.config(background="red", text="ABOVE MEDIAN", width=26)
         longmeanstestbutton.config(state="normal")
+        comittmentperiodformatted.set("58")
         unlock1()
         lock0()
     elif medianincome > (float(currentmonthlyincomeformatted.get()) * float(12)):
@@ -855,6 +896,187 @@ def form122c1():
     return
 
 def plancostcalc():
+    commitmentperiod = float(comittmentperiodformatted.get())
+    totalcramdownamount = 0.0
+    totalnoncramdownamount = 0.0
+    totalpriorityunsecured = 0.0
+    totalgeneralunsecured = 0.0
+    attorneysfee = 100.00
+    car1planpayment = 0.0
+    car2planpayment = 0.0
+    secureddebt1planpayment = 0.0
+    secureddebt2planpayment = 0.0
+    secureddebt3planpayment = 0.0
+    secureddebt4planpayment = 0.0
+    mdi = 0.00
+    ch7 = 0.00
+    toy = 0.00
+
+    ltdarrearscost = (float(firstmortgagearrearsformatted.get()) + float(secondmortgagearrearsformatted.get())) / 60.0
+    planlongtermdebtarrearspaymentformatted.set(ltdarrearscost)
+
+    if car1plantreatmentformatted.get() == "Pay":
+        if car1910statusformatted.get() == "No":
+            car1planpayment = (0.0525 * float(car1loanamountformatted.get())) / (12.0 * (1.0 - (1.0 + (0.0525 / 12.0)) ** (-1.0 * float(commitmentperiod))))
+            car1planpayment = round(car1planpayment, 2)
+            totalnoncramdownamount += car1planpayment
+            plansecurednocramdowncar1formatted.set(car1planpayment)
+        elif car1910statusformatted.get() == "Yes":
+            car1planpayment = (0.0525 * float(car1valueformatted.get())) / (12.0 * (1.0 - (1.0 + (0.0525 / 12.0)) ** (-1.0 * float(commitmentperiod))))
+            car1planpayment = round(car1planpayment, 2)
+            totalcramdownamount += car1planpayment
+            plansecuredcramdowncar1formatted.set(car1planpayment)
+
+    if car2plantreatmentformatted.get() == "Pay":
+        if car2910statusformatted.get() == "No":
+            car2planpayment = (0.0525 * float(car2loanamountformatted.get())) / (12.0 * (1.0 - (1.0 + (0.0525 / 12.0)) ** (-1.0 * float(commitmentperiod))))
+            car2planpayment = round(car2planpayment, 2)
+            totalnoncramdownamount += car2planpayment
+            plansecurednocramdowncar2formatted.set(car2planpayment)
+        elif car2910statusformatted.get() == "Yes":
+            car2planpayment = (0.0525 * float(car2valueformatted.get())) / (12.0 * (1.0 - (1.0 + (0.0525 / 12.0)) ** (-1.0 * float(commitmentperiod))))
+            car2planpayment = round(car2planpayment, 2)
+            totalcramdownamount += car2planpayment
+            plansecuredcramdowncar2formatted.set(car2planpayment)
+
+    if float(secureddebt1amountformatted.get()) != 0.00:
+        if secureddebt1typeformatted.get() == "Judgment":
+            totalgeneralunsecured += float(secureddebt1amountformatted.get())
+        elif secureddebt1typeformatted.get() == "NPPMSI":
+            totalgeneralunsecured += float(secureddebt1amountformatted.get())
+        elif secureddebt1typeformatted.get() == "PMSI":
+            if secureddebt1treatmentformatted.get() == "Retain and Pay":
+                secureddebt1planpayment = (0.0525 * float(secureddebt1amountformatted.get())) / (12.0 * (1.0 - (1.0 + (0.0525 / 12.0)) ** (-1.0 * float(commitmentperiod))))
+                secureddebt1planpayment = round(secureddebt1planpayment, 2)
+                totalnoncramdownamount += secureddebt1planpayment
+                plansecurednocramdownclaim1formatted.set(secureddebt1planpayment)
+            elif secureddebt1treatmentformatted.get() == "Cramdown":
+                secureddebt1planpayment = (0.0525 * float(secureddebt1collateralvalueformatted.get())) / (12.0 * (1.0 - (1.0 + (0.0525 / 12.0)) ** (-1.0 * float(commitmentperiod))))
+                secureddebt1planpayment = round(secureddebt1planpayment, 2)
+                totalcramdownamount += secureddebt1planpayment
+                plansecuredcramdownclaim1formatted.set(secureddebt1planpayment)
+        elif secureddebt1typeformatted.get() == "Lien":
+            secureddebt1planpayment = (0.06 * float(secureddebt1amountformatted.get())) / (12.0 * (1.0 - (1.0 + (0.0525 / 12.0)) ** (-1.0 * float(commitmentperiod))))
+            totalnoncramdownamount += secureddebt1planpayment
+            secureddebt1planpayment = round(secureddebt1planpayment, 2)
+            plansecurednocramdownclaim1formatted.set(secureddebt1planpayment)
+
+    if float(secureddebt2amountformatted.get()) != 0.00:
+        if secureddebt2typeformatted.get() == "Judgment":
+            totalgeneralunsecured += float(secureddebt2amountformatted.get())
+        elif secureddebt2typeformatted.get() == "NPPMSI":
+            totalgeneralunsecured += float(secureddebt2amountformatted.get())
+        elif secureddebt2typeformatted.get() == "PMSI":
+            if secureddebt2treatmentformatted.get() == "Retain and Pay":
+                secureddebt2planpayment = (0.0525 * float(secureddebt2amountformatted.get())) / (12.0 * (1.0 - (1.0 + (0.0525 / 12.0)) ** (-1.0 * float(commitmentperiod))))
+                secureddebt2planpayment = round(secureddebt2planpayment, 2)
+                totalnoncramdownamount += secureddebt2planpayment
+                plansecurednocramdownclaim2formatted.set(secureddebt2planpayment)
+            elif secureddebt2treatmentformatted.get() == "Cramdown":
+                secureddebt2planpayment = (0.0525 * float(secureddebt2collateralvalueformatted.get())) / (12.0 * (1.0 - (1.0 + (0.0525 / 12.0)) ** (-1.0 * float(commitmentperiod))))
+                secureddebt2planpayment = round(secureddebt2planpayment, 2)
+                totalcramdownamount += secureddebt2planpayment
+                plansecuredcramdownclaim2formatted.set(secureddebt2planpayment)
+        elif secureddebt2typeformatted.get() == "Lien":
+            secureddebt2planpayment = (0.06 * float(secureddebt2amountformatted.get())) / (12.0 * (1.0 - (1.0 + (0.0525 / 12.0)) ** (-1.0 * float(commitmentperiod))))
+            totalnoncramdownamount += secureddebt2planpayment
+            secureddebt2planpayment = round(secureddebt2planpayment, 2)
+            plansecurednocramdownclaim2formatted.set(secureddebt2planpayment)
+
+    if float(secureddebt3amountformatted.get()) != 0.00:
+        if secureddebt3typeformatted.get() == "Judgment":
+            totalgeneralunsecured += float(secureddebt3amountformatted.get())
+        elif secureddebt3typeformatted.get() == "NPPMSI":
+            totalgeneralunsecured += float(secureddebt3amountformatted.get())
+        elif secureddebt3typeformatted.get() == "PMSI":
+            if secureddebt3treatmentformatted.get() == "Retain and Pay":
+                secureddebt3planpayment = (0.0525 * float(secureddebt3amountformatted.get())) / (12.0 * (1.0 - (1.0 + (0.0525 / 12.0)) ** (-1.0 * float(commitmentperiod))))
+                secureddebt3planpayment = round(secureddebt3planpayment, 2)
+                totalnoncramdownamount += secureddebt3planpayment
+                plansecurednocramdownclaim3formatted.set(secureddebt3planpayment)
+            elif secureddebt3treatmentformatted.get() == "Cramdown":
+                secureddebt3planpayment = (0.0525 * float(secureddebt3collateralvalueformatted.get())) / (12.0 * (1.0 - (1.0 + (0.0525 / 12.0)) ** (-1.0 * float(commitmentperiod))))
+                secureddebt3planpayment = round(secureddebt3planpayment, 2)
+                totalcramdownamount += secureddebt3planpayment
+                plansecuredcramdownclaim3formatted.set(secureddebt3planpayment)
+        elif secureddebt3typeformatted.get() == "Lien":
+            secureddebt3planpayment = (0.06 * float(secureddebt3amountformatted.get())) / (12.0 * (1.0 - (1.0 + (0.0525 / 12.0)) ** (-1.0 * float(commitmentperiod))))
+            totalnoncramdownamount += secureddebt3planpayment
+            secureddebt3planpayment = round(secureddebt3planpayment, 2)
+            plansecurednocramdownclaim3formatted.set(secureddebt3planpayment)
+
+    if float(secureddebt4amountformatted.get()) != 0.00:
+        if secureddebt4typeformatted.get() == "Judgment":
+            totalgeneralunsecured += float(secureddebt4amountformatted.get())
+        elif secureddebt4typeformatted.get() == "NPPMSI":
+            totalgeneralunsecured += float(secureddebt4amountformatted.get())
+        elif secureddebt4typeformatted.get() == "PMSI":
+            if secureddebt4treatmentformatted.get() == "Retain and Pay":
+                secureddebt4planpayment = (0.0525 * float(secureddebt4amountformatted.get())) / (12.0 * (1.0 - (1.0 + (0.0525 / 12.0)) ** (-1.0 * float(commitmentperiod))))
+                secureddebt4planpayment = round(secureddebt4planpayment, 2)
+                totalnoncramdownamount += secureddebt4planpayment
+                plansecurednocramdownclaim4formatted.set(secureddebt4planpayment)
+            elif secureddebt4treatmentformatted.get() == "Cramdown":
+                secureddebt4planpayment = (0.0525 * float(secureddebt4collateralvalueformatted.get())) / (12.0 * (1.0 - (1.0 + (0.0525 / 12.0)) ** (-1.0 * float(commitmentperiod))))
+                secureddebt4planpayment = round(secureddebt4planpayment, 2)
+                totalcramdownamount += secureddebt4planpayment
+                plansecuredcramdownclaim4formatted.set(secureddebt4planpayment)
+        elif secureddebt4typeformatted.get() == "Lien":
+            secureddebt4planpayment = (0.06 * float(secureddebt4amountformatted.get())) / (12.0 * (1.0 - (1.0 + (0.0525 / 12.0)) ** (-1.0 * float(commitmentperiod))))
+            totalnoncramdownamount += secureddebt4planpayment
+            secureddebt4planpayment = round(secureddebt4planpayment, 2)
+            plansecurednocramdownclaim4formatted.set(secureddebt4planpayment)
+
+    totalnoncramdownamount = round(totalnoncramdownamount, 2)
+    totalcramdownamount = round(totalcramdownamount, 2)
+
+    plansecurednocramdowntotalformatted.set(totalnoncramdownamount)
+    plansecuredcramdowntotalformatted.set(totalcramdownamount)
+
+    planattorneysfeesformatted.set(attorneysfee)
+
+    totalpriorityunsecured = float(priorityclaimstotalformatted.get()) / float(commitmentperiod)
+    totalpriorityunsecured = round(totalpriorityunsecured, 2)
+    planpriorityclaimsformatted.set(totalpriorityunsecured)
+
+    if monthlydisposableincomeformatted.get() != "0.00":
+        mdi = float(monthlydisposableincomeformatted.get()) * 60.0
+    if chapter7dividendformatted.get() != "0.00":
+        ch7 = float(chapter7dividendformatted.get())
+    if toydividendformatted.get() != "0.00":
+        toy = float(toydividendformatted.get())
+
+    planparamamount = max(mdi, ch7, toy)
+    planparambasis = "N/A"
+    if planparamamount == mdi:
+        planparambasis = "5.1(a), MDI"
+    elif planparamamount == ch7:
+        planparambasis = "5.1(b), Ch. 7 Div."
+    elif planparamamount == toy:
+        planparambasis = "5.1(c), Toy Div."
+    
+    plangeneralunsecuredclaimsbasisformatted.set(planparambasis)
+
+    planunsecuredividendamount = 0.0
+    planunsecuredividendbasis = "N/A"
+
+    if planparambasis == "N/A":
+
+        #Scenario 1: No MDI, CH7, or TOY.
+            #(Schedule I - Schedule J) - totalmonthly cost
+                #If result is > 0:
+                    #result * commitmentperiod
+                    #product / totalamountgeneralunsecuredclaims = 5.2a%
+                #If result is <= 0:
+                    #5.2a% = 0
+        #Scenario 2:
+
+        plangeneralunsecuredclaimsdividendformatted.set("0.00")
+
+
+
+    
+
     return
 
 panel = ttk.Notebook(root)
@@ -955,11 +1177,25 @@ childsupportreceivedlabel = ttk.Label(shortmeanstestpage, text="CS Portion of CM
 childsupportreceivedlabel.grid(column=3, row=5, pady=5, padx=10)
 childsupportreceivedentry.grid(column=3, row=6, pady=5, padx=10)
 
-meansteststatuslabel = ttk.Label(shortmeanstestpage, background="cyan", anchor="center", text="No Means Test Data Entered")
-meansteststatuslabel.grid(column=3, row=4, pady=5, padx=10)
-
 shortmeanstestbutton = ttk.Button(shortmeanstestpage, text="Run Short Means Test", command=lambda: [form122c1(), unlock0()])
-shortmeanstestbutton.grid(column=0, row=7, pady=5, padx=10)
+shortmeanstestbutton.grid(column=0, row=7, pady=10, padx=10)
+
+blankline0 = ttk.Label(shortmeanstestpage, text="", state="disabled")
+blankline0.grid(column=0, row=8, pady=5)
+
+applicablecomittmentperiod36m = ttk.Radiobutton(shortmeanstestpage, text="36 months", variable=comittmentperiodformatted, value="36", state="disabled")
+applicablecomittmentperiod60m = ttk.Radiobutton(shortmeanstestpage, text="60 months", variable=comittmentperiodformatted, value="58", state="disabled")
+applicablecomittmentperioddefined = ttk.Entry(shortmeanstestpage, textvariable=comittmentperiodformatted, state="disabled")
+applicablecomittmentperiodlabel = ttk.Label(shortmeanstestpage, text="Applicable Commitment Period", state="normal")
+applicablecomittmentperiodlabel.grid(column=0, row=9, columnspan=3, pady=5)
+applicablecomittmentperiod36m.grid(column=0, row=10, pady=5)
+applicablecomittmentperiod60m.grid(column=1, row=10, pady=5)
+applicablecomittmentperioddefined.grid(column=2, row=10, pady=5)
+
+meanstestresultlabel = ttk.Label(shortmeanstestpage, text="Means Test Result")
+meansteststatuslabel = ttk.Label(shortmeanstestpage, background="cyan", anchor="center", text="No Means Test Data Entered")
+meanstestresultlabel.grid(column=1, row=11, pady=5)
+meansteststatuslabel.grid(column=1, row=12, pady=5)
 
 housequeryentryyes = ttk.Radiobutton(house, text="Yes", variable=housequeryformatted, value="Yes", state="disabled", command=yes0)
 housequeryentryno = ttk.Radiobutton(house, text="No", variable=housequeryformatted, value="No", state="disabled", command=no0)
@@ -1475,10 +1711,6 @@ monthlydisposableincomelabel = ttk.Label(longmeanstestpage, text="MDI", state="d
 monthlydisposableincomelabel.grid(column=9, row=0, pady=5, padx=10)
 monthlydisposableincomeentry.grid(column=9, row=1)
 
-
-
-
-
 planlongtermdebtscurrentdata = ttk.Label(plancalcpage, textvariable=firstmortgagecurrentpaymentformatted, state="disabled")
 planlongtermdebtscurrentlabel = ttk.Label(plancalcpage, text="Long-Term Debts (3.1)", state="disabled")
 planlongtermdebtscurrentlabel.grid(column=0, row=0, pady=5)
@@ -1489,43 +1721,118 @@ planlongtermdebtsarrearslabel = ttk.Label(plancalcpage, text="Long-Term Debt Arr
 planlongtermdebtsarrearslabel.grid(column=0, row=2, pady=5)
 planlongtermdebtsarrearsdata.grid(column=0, row=3)
 
-plansecurednocramdowndata = ttk.Label(plancalcpage, textvariable=plansecurednocramdownformatted, state="disabled")
-plansecurednocramdownlabel = ttk.Label(plancalcpage, text="Secured Claims, No CD (3.3)", state="disabled")
-plansecurednocramdownlabel.grid(column=0, row=4, pady=5)
-plansecurednocramdowndata.grid(column=0, row=5)
+plansecurednocramdowndata0 = ttk.Label(plancalcpage, textvariable=plansecurednocramdowntotalformatted, state="disabled")
+plansecurednocramdownlabel0 = ttk.Label(plancalcpage, text="Secured Claims, No CD (3.3)", state="disabled")
+plansecurednocramdownlabel0.grid(column=0, row=4, pady=5, padx=5)
+plansecurednocramdowndata0.grid(column=0, row=5)
 
-plansecuredcramdowndata = ttk.Label(plancalcpage, textvariable=plansecuredcramdownformatted, state="disabled")
-plansecuredcramdownlabel = ttk.Label(plancalcpage, text="Secured Claims, CD (3.5)", state="disabled")
-plansecuredcramdownlabel.grid(column=0, row=6, pady=5)
-plansecuredcramdowndata.grid(column=0, row=7)
+plansecurednocramdowndata1 = ttk.Label(plancalcpage, textvariable=plansecurednocramdowncar1formatted, state="disabled")
+plansecurednocramdownlabel1 = ttk.Label(plancalcpage, text="Car #1", state="disabled")
+plansecurednocramdownlabel1.grid(column=1, row=4, pady=5, padx=5)
+plansecurednocramdowndata1.grid(column=1, row=5)
+
+plansecurednocramdowndata2 = ttk.Label(plancalcpage, textvariable=plansecurednocramdowncar2formatted, state="disabled")
+plansecurednocramdownlabel2 = ttk.Label(plancalcpage, text="Car #2", state="disabled")
+plansecurednocramdownlabel2.grid(column=2, row=4, pady=5, padx=5)
+plansecurednocramdowndata2.grid(column=2, row=5)
+
+plansecurednocramdowndata3 = ttk.Label(plancalcpage, textvariable=plansecurednocramdownclaim1formatted, state="disabled")
+plansecurednocramdownlabel3 = ttk.Label(plancalcpage, text="Sec. Claim #1", state="disabled")
+plansecurednocramdownlabel3.grid(column=3, row=4, pady=5, padx=5)
+plansecurednocramdowndata3.grid(column=3, row=5)
+
+plansecurednocramdowndata4 = ttk.Label(plancalcpage, textvariable=plansecurednocramdownclaim2formatted, state="disabled")
+plansecurednocramdownlabel4 = ttk.Label(plancalcpage, text="Sec. Claim #2", state="disabled")
+plansecurednocramdownlabel4.grid(column=4, row=4, pady=5, padx=5)
+plansecurednocramdowndata4.grid(column=4, row=5)
+
+plansecurednocramdowndata5 = ttk.Label(plancalcpage, textvariable=plansecurednocramdownclaim3formatted, state="disabled")
+plansecurednocramdownlabel5 = ttk.Label(plancalcpage, text="Sec. Claim #3", state="disabled")
+plansecurednocramdownlabel5.grid(column=5, row=4, pady=5, padx=5)
+plansecurednocramdowndata5.grid(column=5, row=5)
+
+plansecurednocramdowndata6 = ttk.Label(plancalcpage, textvariable=plansecurednocramdownclaim4formatted, state="disabled")
+plansecurednocramdownlabel6 = ttk.Label(plancalcpage, text="Sec. Claim #4", state="disabled")
+plansecurednocramdownlabel6.grid(column=6, row=4, pady=5, padx=5)
+plansecurednocramdowndata6.grid(column=6, row=5)
+
+plansecuredcramdowndata0 = ttk.Label(plancalcpage, textvariable=plansecuredcramdowntotalformatted, state="disabled")
+plansecuredcramdownlabel0 = ttk.Label(plancalcpage, text="Sec. Claims Total, CD (3.5)", state="disabled")
+plansecuredcramdownlabel0.grid(column=0, row=6, pady=5, padx=5)
+plansecuredcramdowndata0.grid(column=0, row=7)
+
+plansecuredcramdowndata1 = ttk.Label(plancalcpage, textvariable=plansecuredcramdowncar1formatted, state="disabled")
+plansecuredcramdownlabel1 = ttk.Label(plancalcpage, text="Car #1", state="disabled")
+plansecuredcramdownlabel1.grid(column=1, row=6, pady=5, padx=5)
+plansecuredcramdowndata1.grid(column=1, row=7)
+
+plansecuredcramdowndata2 = ttk.Label(plancalcpage, textvariable=plansecuredcramdowncar2formatted, state="disabled")
+plansecuredcramdownlabel2 = ttk.Label(plancalcpage, text="Car #2", state="disabled")
+plansecuredcramdownlabel2.grid(column=2, row=6, pady=5, padx=5)
+plansecuredcramdowndata2.grid(column=2, row=7)
+
+plansecuredcramdowndata3 = ttk.Label(plancalcpage, textvariable=plansecuredcramdownclaim1formatted, state="disabled")
+plansecuredcramdownlabel3 = ttk.Label(plancalcpage, text="Sec. Claim #1", state="disabled")
+plansecuredcramdownlabel3.grid(column=3, row=6, pady=5, padx=5)
+plansecuredcramdowndata3.grid(column=3, row=7)
+
+plansecuredcramdowndata4 = ttk.Label(plancalcpage, textvariable=plansecuredcramdownclaim2formatted, state="disabled")
+plansecuredcramdownlabel4 = ttk.Label(plancalcpage, text="Sec. Claim #2", state="disabled")
+plansecuredcramdownlabel4.grid(column=4, row=6, pady=5, padx=5)
+plansecuredcramdowndata4.grid(column=4, row=7)
+
+plansecuredcramdowndata5 = ttk.Label(plancalcpage, textvariable=plansecuredcramdownclaim3formatted, state="disabled")
+plansecuredcramdownlabel5 = ttk.Label(plancalcpage, text="Sec. Claim #3", state="disabled")
+plansecuredcramdownlabel5.grid(column=5, row=6, pady=5, padx=5)
+plansecuredcramdowndata5.grid(column=5, row=7)
+
+plansecuredcramdowndata6 = ttk.Label(plancalcpage, textvariable=plansecuredcramdownclaim4formatted, state="disabled")
+plansecuredcramdownlabel6 = ttk.Label(plancalcpage, text="Sec. Claim #4", state="disabled")
+plansecuredcramdownlabel6.grid(column=6, row=6, pady=5, padx=5)
+plansecuredcramdowndata6.grid(column=6, row=7)
 
 planattorneysfeesdata = ttk.Label(plancalcpage, textvariable=planattorneysfeesformatted, state="disabled")
 planattorneysfeeslabel = ttk.Label(plancalcpage, text="Attorney's Fees (4.1)", state="disabled")
 planattorneysfeeslabel.grid(column=0, row=8, pady=5)
 planattorneysfeesdata.grid(column=0, row=9)
 
-plantrusteefeesdata = ttk.Label(plancalcpage, textvariable=plantrusteefeesformatted, state="disabled")
-plantrusteefeeslabel = ttk.Label(plancalcpage, text="Trustee Fees (4.1)", state="disabled")
-plantrusteefeeslabel.grid(column=0, row=10, pady=5)
-plantrusteefeesdata.grid(column=0, row=11)
-
 planpriorityclaimsdata = ttk.Label(plancalcpage, textvariable=planpriorityclaimsformatted, state="disabled")
 planpriorityclaimslabel = ttk.Label(plancalcpage, text="Priority Claims (4.4)", state="disabled")
-planpriorityclaimslabel.grid(column=0, row=12, pady=5)
-planpriorityclaimsdata.grid(column=0, row=13)
+planpriorityclaimslabel.grid(column=0, row=10, pady=5)
+planpriorityclaimsdata.grid(column=0, row=11)
 
 plangeneralunsecuredclaimsdata = ttk.Label(plancalcpage, textvariable=plangeneralunsecuredclaimsformatted, state="disabled")
 plangeneralunsecuredclaimslabel = ttk.Label(plancalcpage, text="Gen. Unsecured (5.2)", state="disabled")
-plangeneralunsecuredclaimslabel.grid(column=0, row=14, pady=5)
-plangeneralunsecuredclaimsdata.grid(column=0, row=15)
+plangeneralunsecuredclaimslabel.grid(column=0, row=12, pady=5)
+plangeneralunsecuredclaimsdata.grid(column=0, row=13)
+
+plangeneralunsecuredclaimsdividenddata = ttk.Label(plancalcpage, textvariable=plangeneralunsecuredclaimsdividendformatted, state="disabled")
+plangeneralunsecuredclaimsdividendlabel = ttk.Label(plancalcpage, text="Unsec. Div.", state="disabled")
+plangeneralunsecuredclaimsdividendlabel.grid(column=1, row=12, pady=5)
+plangeneralunsecuredclaimsdividenddata.grid(column=1, row=13)
 
 plangeneralunsecuredclaimsbasisdata = ttk.Label(plancalcpage, textvariable=plangeneralunsecuredclaimsbasisformatted, state="disabled")
-plangeneralunsecuredclaimsbasislabel = ttk.Label(plancalcpage, text="Basis (5.1)", state="disabled")
-plangeneralunsecuredclaimsbasislabel.grid(column=1, row=14, pady=5)
-plangeneralunsecuredclaimsbasisdata.grid(column=1, row=15)
+plangeneralunsecuredclaimsbasislabel = ttk.Label(plancalcpage, text="Basis", state="disabled")
+plangeneralunsecuredclaimsbasislabel.grid(column=2, row=12, pady=5)
+plangeneralunsecuredclaimsbasisdata.grid(column=2, row=13)
 
-blankline = ttk.Label(plancalcpage, text="", state="disabled")
-blankline.grid(column=0, row=16, pady=5)
+plangeneralunsecuredclaimspercentagedata = ttk.Label(plancalcpage, textvariable=plangeneralunsecuredclaimspercentageformatted, state="disabled")
+plangeneralunsecuredclaimspercentagelabel = ttk.Label(plancalcpage, text="Percentage", state="disabled")
+plangeneralunsecuredclaimspercentagelabel.grid(column=3, row=12, pady=5)
+plangeneralunsecuredclaimspercentagedata.grid(column=3, row=13)
+
+plangeneralunsecuredclaimspercentagebasisdata = ttk.Label(plancalcpage, textvariable=plangeneralunsecuredclaimspercentagebasisformatted, state="disabled")
+plangeneralunsecuredclaimspercentagebasislabel = ttk.Label(plancalcpage, text="% Basis", state="disabled")
+plangeneralunsecuredclaimspercentagebasislabel.grid(column=4, row=12, pady=5)
+plangeneralunsecuredclaimspercentagebasisdata.grid(column=4, row=13)
+
+plantrusteefeesdata = ttk.Label(plancalcpage, textvariable=plantrusteefeesformatted, state="disabled")
+plantrusteefeeslabel = ttk.Label(plancalcpage, text="Trustee Fees (4.1)", state="disabled")
+plantrusteefeeslabel.grid(column=0, row=14, pady=5)
+plantrusteefeesdata.grid(column=0, row=15)
+
+blankline1 = ttk.Label(plancalcpage, text="", state="disabled")
+blankline1.grid(column=0, row=16, pady=5)
 
 plantotalmonthlycostdata = ttk.Label(plancalcpage, textvariable=plantotalmonthlycostformatted, state="disabled")
 plantotalmonthlycostlabel = ttk.Label(plancalcpage, text="TOTAL", state="disabled")
