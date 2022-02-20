@@ -149,6 +149,8 @@ scheduleiline12formatted = DoubleVar()
 scheduleiline12formatted.set("18000.00")
 schedulejline22cformatted = DoubleVar()
 schedulejline22cformatted.set("15000.00")
+presumptiveplanpaymentformatted = DoubleVar()
+presumptiveplanpaymentformatted.set("0.00")
 mtline6formatted = DoubleVar()
 mtline6formatted.set("0.00")
 mtline7formatted = DoubleVar()
@@ -213,6 +215,8 @@ meanstestdeductionsformatted = DoubleVar()
 meanstestdeductionsformatted.set("0.00")
 monthlydisposableincomeformatted = DoubleVar()
 monthlydisposableincomeformatted.set("0.00")
+planlongtermdebtpaymentformatted = DoubleVar()
+planlongtermdebtpaymentformatted.set(float(firstmortgagecurrentpaymentformatted.get()) + float(secondmortgagecurrentpaymentformatted.get()))
 planlongtermdebtarrearspaymentformatted = DoubleVar()
 planlongtermdebtarrearspaymentformatted.set("0.00")
 plansecurednocramdowntotalformatted = DoubleVar()
@@ -257,8 +261,6 @@ plangeneralunsecuredclaimsdividendformatted = DoubleVar()
 plangeneralunsecuredclaimsdividendformatted.set("0.00")
 plangeneralunsecuredclaimspercentageformatted = DoubleVar()
 plangeneralunsecuredclaimspercentageformatted.set("0.0")
-plangeneralunsecuredclaimspercentagebasisformatted = StringVar()
-plangeneralunsecuredclaimspercentagebasisformatted.set("N/A")
 plantotalmonthlycostformatted = DoubleVar()
 plantotalmonthlycostformatted.set("0.00")
 
@@ -556,6 +558,56 @@ def unlock1():
     toydividendentry.config(state="normal")
     toydividendlabel.config(state="normal")
 
+def unlock2():
+    planlongtermdebtscurrentdata.config(state="normal")
+    planlongtermdebtscurrentlabel.config(state="normal")
+    planlongtermdebtsarrearsdata.config(state="normal")
+    planlongtermdebtsarrearslabel.config(state="normal")
+    plansecurednocramdowndata0.config(state="normal")
+    plansecurednocramdowndata1.config(state="normal")
+    plansecurednocramdowndata2.config(state="normal")
+    plansecurednocramdowndata3.config(state="normal")
+    plansecurednocramdowndata4.config(state="normal")
+    plansecurednocramdowndata5.config(state="normal")
+    plansecurednocramdowndata6.config(state="normal")
+    plansecurednocramdownlabel0.config(state="normal")
+    plansecurednocramdownlabel1.config(state="normal")
+    plansecurednocramdownlabel2.config(state="normal")
+    plansecurednocramdownlabel3.config(state="normal")
+    plansecurednocramdownlabel4.config(state="normal")
+    plansecurednocramdownlabel5.config(state="normal")
+    plansecurednocramdownlabel6.config(state="normal")
+    plansecuredcramdowndata0.config(state="normal")
+    plansecuredcramdowndata1.config(state="normal")
+    plansecuredcramdowndata2.config(state="normal")
+    plansecuredcramdowndata3.config(state="normal")
+    plansecuredcramdowndata4.config(state="normal")
+    plansecuredcramdowndata5.config(state="normal")
+    plansecuredcramdowndata6.config(state="normal")
+    plansecuredcramdownlabel0.config(state="normal")
+    plansecuredcramdownlabel1.config(state="normal")
+    plansecuredcramdownlabel2.config(state="normal")
+    plansecuredcramdownlabel3.config(state="normal")
+    plansecuredcramdownlabel4.config(state="normal")
+    plansecuredcramdownlabel5.config(state="normal")
+    plansecuredcramdownlabel6.config(state="normal")
+    planattorneysfeesdata.config(state="normal")
+    planattorneysfeeslabel.config(state="normal")
+    planpriorityclaimsdata.config(state="normal")
+    planpriorityclaimslabel.config(state="normal")
+    plangeneralunsecuredclaimspercentagedata.config(state="normal")
+    plangeneralunsecuredclaimspercentagelabel.config(state="normal")
+    plangeneralunsecuredclaimsbasisdata.config(state="normal")
+    plangeneralunsecuredclaimsbasislabel.config(state="normal")
+    plangeneralunsecuredclaimsdividenddata.config(state="normal")
+    plangeneralunsecuredclaimsdividendlabel.config(state="normal")
+    plangeneralunsecuredclaimsdata.config(state="normal")
+    plangeneralunsecuredclaimslabel.config(state="normal")
+    plantrusteefeesdata.config(state="normal")
+    plantrusteefeeslabel.config(state="normal")
+    plantotalmonthlycostdata.config(state="normal")
+    plantotalmonthlycostlabel.config(state="normal")
+
 def married():
     if maritalfilingstatusmarriedsingleformatted.get() == 1:
         maritaladjustmentlabel.config(state="normal")
@@ -847,7 +899,6 @@ def form122c2():
         monthlydisposableincomeentry.config(state="readonly")
         monthlydisposableincomelabel.config(state="normal")
         plancostcalcbutton.config(state="normal")
-
         return
 
 def form122c1():
@@ -900,7 +951,7 @@ def plancostcalc():
     totalcramdownamount = 0.0
     totalnoncramdownamount = 0.0
     totalpriorityunsecured = 0.0
-    totalgeneralunsecured = 0.0
+    totalgeneralunsecured = float(generalunsecuredclaimsformatted.get())
     attorneysfee = 100.00
     car1planpayment = 0.0
     car2planpayment = 0.0
@@ -1039,6 +1090,10 @@ def plancostcalc():
     totalpriorityunsecured = round(totalpriorityunsecured, 2)
     planpriorityclaimsformatted.set(totalpriorityunsecured)
 
+    dummypaymentcalc = float(planlongtermdebtpaymentformatted.get()) + ltdarrearscost + totalnoncramdownamount + totalcramdownamount + attorneysfee + totalpriorityunsecured
+    dummypaymentcalc = dummypaymentcalc * 1.06
+    dummypaymentcalc = round(dummypaymentcalc, 2)
+
     if monthlydisposableincomeformatted.get() != "0.00":
         mdi = float(monthlydisposableincomeformatted.get()) * 60.0
     if chapter7dividendformatted.get() != "0.00":
@@ -1049,29 +1104,60 @@ def plancostcalc():
     planparamamount = max(mdi, ch7, toy)
     planparambasis = "N/A"
     if planparamamount == mdi:
-        planparambasis = "5.1(a), MDI"
+        planparambasis = "5.1(a)"
     elif planparamamount == ch7:
-        planparambasis = "5.1(b), Ch. 7 Div."
+        planparambasis = "5.1(b)"
     elif planparamamount == toy:
-        planparambasis = "5.1(c), Toy Div."
+        planparambasis = "5.1(c)"
     
     plangeneralunsecuredclaimsbasisformatted.set(planparambasis)
 
     planunsecuredividendamount = 0.0
     planunsecuredividendbasis = "N/A"
+    planpaymentbudget0 = 0.0
+    planpaymentbudget1 = 0.0
+    planpaymentbudget2 = 0.0
+    planpaymentbudget3 = 0.0
 
     if planparambasis == "N/A":
+        planpaymentbudget0 = float(scheduleiline12entry) - float(schedulejline22cformatted)
+        planpaymentbudget1 = planpaymentbudget0 - dummypaymentcalc
+        if planpaymentbudget1 > 0:
+            planpaymentbudget2 = planpaymentbudget1 * float(commitmentperiod)
+            planpaymentbudget3 = planpaymentbudget2 / float(generalunsecuredclaimsformatted.get())
+            planpaymentbudget3 = round(planpaymentbudget3, 2)
+            planpaymentbudget3 = planpaymentbudget3 * 100
+            if planpaymentbudget3 > 1:
+                planpaymentbudget3 = 100
+        elif planpaymentbudget1 <= 0:
+            planpaymentbudget3 = 0.0
+    elif planparambasis != "N/A":
+        planpaymentbudget3 = float(planparamamount) / float(totalgeneralunsecured)
+        planpaymentbudget3 = round(planpaymentbudget3, 2)
+        planpaymentbudget3 = planpaymentbudget3 * 100
+        if planpaymentbudget3 > 1:
+            planpaymentbudget3 = 100
 
-        #Scenario 1: No MDI, CH7, or TOY.
-            #(Schedule I - Schedule J) - totalmonthly cost
-                #If result is > 0:
-                    #result * commitmentperiod
-                    #product / totalamountgeneralunsecuredclaims = 5.2a%
-                #If result is <= 0:
-                    #5.2a% = 0
-        #Scenario 2:
+    plangeneralunsecuredclaimspercentageformatted.set(planpaymentbudget3)
 
-        plangeneralunsecuredclaimsdividendformatted.set("0.00")
+    totalgeneralunsecuredpaidunderplan = (planpaymentbudget3 / 100) * totalgeneralunsecured
+
+    plangeneralunsecuredclaimsdividendformatted.set(totalgeneralunsecuredpaidunderplan)
+
+    totalgeneralunsecuredpaidunderplanmonthly = totalgeneralunsecuredpaidunderplan / commitmentperiod
+
+    plangeneralunsecuredclaimsformatted.set(round(totalgeneralunsecuredpaidunderplanmonthly, 2))
+
+    completemonthlytotal0 = float(planlongtermdebtpaymentformatted.get()) + ltdarrearscost + totalnoncramdownamount + \
+                           totalcramdownamount + attorneysfee + totalpriorityunsecured + totalgeneralunsecuredpaidunderplanmonthly
+    completemonthlytotal1 = completemonthlytotal0 * 0.06
+    completemonthlytotal2 = completemonthlytotal0 * 1.06
+
+    plantrusteefeesformatted.set(round(completemonthlytotal1, 2))
+
+    plantotalmonthlycostformatted.set(round(completemonthlytotal2, 2))
+
+    unlock2()
 
 
 
@@ -1532,6 +1618,11 @@ schedulejline22clabel = ttk.Label(unsecdebts, text="Schedule J - Line 22c", stat
 schedulejline22clabel.grid(column=2, row=2, pady=5)
 schedulejline22centry.grid(column=2, row=3)
 
+presumptivemonthlyplanpaymententry = ttk.Entry(unsecdebts, textvariable=presumptiveplanpaymentformatted, state="disabled")
+presumptivemonthlyplanpaymentlabel = ttk.Label(unsecdebts, text="Presumptive Plan Payment", state="disabled")
+presumptivemonthlyplanpaymentlabel.grid(column=2, row=4, pady=5)
+presumptivemonthlyplanpaymententry.grid(column=2, row=5)
+
 meanstestprojectedplanpaymententry = ttk.Entry(longmeanstestpage, textvariable=mtline36aformatted, state="disabled")
 meanstestprojectedplanpaymentlabel = ttk.Label(longmeanstestpage, text="Projected Plan Payment", state="disabled")
 meanstestprojectedplanpaymentlabel.grid(column=3, row=24, pady=5, padx=10)
@@ -1711,7 +1802,7 @@ monthlydisposableincomelabel = ttk.Label(longmeanstestpage, text="MDI", state="d
 monthlydisposableincomelabel.grid(column=9, row=0, pady=5, padx=10)
 monthlydisposableincomeentry.grid(column=9, row=1)
 
-planlongtermdebtscurrentdata = ttk.Label(plancalcpage, textvariable=firstmortgagecurrentpaymentformatted, state="disabled")
+planlongtermdebtscurrentdata = ttk.Label(plancalcpage, textvariable=planlongtermdebtpaymentformatted, state="disabled")
 planlongtermdebtscurrentlabel = ttk.Label(plancalcpage, text="Long-Term Debts (3.1)", state="disabled")
 planlongtermdebtscurrentlabel.grid(column=0, row=0, pady=5)
 planlongtermdebtscurrentdata.grid(column=0, row=1)
@@ -1807,7 +1898,7 @@ plangeneralunsecuredclaimslabel.grid(column=0, row=12, pady=5)
 plangeneralunsecuredclaimsdata.grid(column=0, row=13)
 
 plangeneralunsecuredclaimsdividenddata = ttk.Label(plancalcpage, textvariable=plangeneralunsecuredclaimsdividendformatted, state="disabled")
-plangeneralunsecuredclaimsdividendlabel = ttk.Label(plancalcpage, text="Unsec. Div.", state="disabled")
+plangeneralunsecuredclaimsdividendlabel = ttk.Label(plancalcpage, text="Total Div.", state="disabled")
 plangeneralunsecuredclaimsdividendlabel.grid(column=1, row=12, pady=5)
 plangeneralunsecuredclaimsdividenddata.grid(column=1, row=13)
 
@@ -1820,11 +1911,6 @@ plangeneralunsecuredclaimspercentagedata = ttk.Label(plancalcpage, textvariable=
 plangeneralunsecuredclaimspercentagelabel = ttk.Label(plancalcpage, text="Percentage", state="disabled")
 plangeneralunsecuredclaimspercentagelabel.grid(column=3, row=12, pady=5)
 plangeneralunsecuredclaimspercentagedata.grid(column=3, row=13)
-
-plangeneralunsecuredclaimspercentagebasisdata = ttk.Label(plancalcpage, textvariable=plangeneralunsecuredclaimspercentagebasisformatted, state="disabled")
-plangeneralunsecuredclaimspercentagebasislabel = ttk.Label(plancalcpage, text="% Basis", state="disabled")
-plangeneralunsecuredclaimspercentagebasislabel.grid(column=4, row=12, pady=5)
-plangeneralunsecuredclaimspercentagebasisdata.grid(column=4, row=13)
 
 plantrusteefeesdata = ttk.Label(plancalcpage, textvariable=plantrusteefeesformatted, state="disabled")
 plantrusteefeeslabel = ttk.Label(plancalcpage, text="Trustee Fees (4.1)", state="disabled")
