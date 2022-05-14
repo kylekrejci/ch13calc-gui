@@ -6,11 +6,8 @@ from bs4 import BeautifulSoup
 
 root = Tk()
 root.title("GAMD Chapter 13 Calculator")
-# root.columnconfigure(0, weight=1)
-# root.rowconfigure(0, weight=1)
-# w, h = root.winfo_screenwidth(), root.winfo_screenheight()
-# root.geometry("%dx%d+0+0" % (w, h))
-# root.state("zoomed")
+
+# Define input fields. Populate with dummy data.
 
 countyformatted = StringVar()
 countyformatted.set("Bibb County")
@@ -263,6 +260,8 @@ plangeneralunsecuredclaimspercentageformatted = DoubleVar()
 plangeneralunsecuredclaimspercentageformatted.set("0.0")
 plantotalmonthlycostformatted = DoubleVar()
 plantotalmonthlycostformatted.set("0.00")
+
+# Helper functions.
 
 def yes0():
     houseplantreatmentpay.config(state="normal")
@@ -607,6 +606,7 @@ def unlock2():
     plantrusteefeeslabel.config(state="normal")
     plantotalmonthlycostdata.config(state="normal")
     plantotalmonthlycostlabel.config(state="normal")
+    presumptivemonthlyplanpaymentlabel.config(state="normal")
 
 def married():
     if maritalfilingstatusmarriedsingleformatted.get() == 1:
@@ -653,6 +653,8 @@ def car2surrender():
     car2loanqueryentryyes.config(state="disabled")
     car2loanqueryentryno.config(state="disabled")
 
+# Long-form means test function
+
 def form122c2():
     global meanstestdeductionsformatted
     meanstestdeductions = float(0)
@@ -660,12 +662,12 @@ def form122c2():
     mtline6 = float(0)
     mtline7 = float(0)
 
-    natstan0 = [0.00, 723.00, 1292.00, 1473.00, 1740.00]
+    natstan0 = [0.00, 785.00, 1410.00, 1610.00, 1900.00]
     if householdsizeget <= 4:
         mtline6 = natstan0[householdsizeget]
         mtline6 = round(mtline6, 2)
     elif householdsizeget > 4:
-        mtline6 = 1740.00 + ((householdsizeget - 4) * 341)
+        mtline6 = 1740.00 + ((householdsizeget - 4) * 344)
         mtline6 = round(mtline6, 2)
 
     mtline6formatted.set(mtline6)
@@ -673,7 +675,7 @@ def form122c2():
     meanstestdeductions += mtline6
 
     householdover65 = float(householdover65formatted.get())
-    mtline7 = (householdover65 * 142.00) + ((float(householdsizeget) - householdover65) * 68.00)
+    mtline7 = (householdover65 * 153.00) + ((float(householdsizeget) - householdover65) * 75.00)
 
     mtline7formatted.set(mtline7)
 
@@ -681,7 +683,7 @@ def form122c2():
 
     countyget = countyformatted.get()
 
-    r0 = requests.get('https://www.justice.gov/ust/eo/bapcpa/20210515/bci_data/housing_charts/irs_housing_charts_GA.htm')
+    r0 = requests.get('https://www.justice.gov/ust/eo/bapcpa/20220515/bci_data/housing_charts/irs_housing_charts_GA.htm')
     r1 = r0.text
     soup = BeautifulSoup(r1, 'html.parser')
     housingoperating0 = soup.find("td", class_="hctablecellleft", string=countyget)
@@ -750,30 +752,30 @@ def form122c2():
         meanstestdeductions += (claimedmortgage5people + housingoperating5people)
 
     if numberofcarsformatted.get() == 0:
-        mtline12 = 217.00
+        mtline12 = 242.00
         mtline12formatted.set(mtline12)
-        meanstestdeductions += 217.00
+        meanstestdeductions += 242.00
     elif numberofcarsformatted.get() == 1:
         if countyget in ["Butts County", "Jasper County", "Lamar County", "Morgan County", "Walton County"]:
-            mtline12 = 251.00
+            mtline12 = 320.00
             mtline12formatted.set(mtline12)
-            meanstestdeductions += 251.00
+            meanstestdeductions += 320.00
         else:
-            mtline12 = 224.00
+            mtline12 = 267.00
             mtline12formatted.set(mtline12)
-            meanstestdeductions += 224.00
+            meanstestdeductions += 267.00
     elif numberofcarsformatted.get() == 2:
         if countyget in ["Butts County", "Jasper County", "Lamar County", "Morgan County", "Walton County"]:
-            mtline12 = 502.00
+            mtline12 = 640.00
             mtline12formatted.set(mtline12)
-            meanstestdeductions += 502.00
+            meanstestdeductions += 640.00
         else:
-            mtline12 = 448.00
+            mtline12 = 534.00
             mtline12formatted.set(mtline12)
-            meanstestdeductions += 448.00
+            meanstestdeductions += 534.00
 
     if numberofcarsformatted.get() == 1:
-        claimedcar1 = float(533.00) - float(car1loanamountformatted.get()) / 60.00
+        claimedcar1 = float(588.00) - float(car1loanamountformatted.get()) / 60.00
         claimedcar1 = round(claimedcar1, 2)
         if claimedcar1 < 0:
             claimedcar1 = 0
@@ -781,13 +783,13 @@ def form122c2():
         mtline13cformatted.set(mtline13c)
         meanstestdeductions += mtline13c
     if numberofcarsformatted.get() == 2:
-        claimedcar1 = float(533.00) - float(car1loanamountformatted.get()) / 60.00
+        claimedcar1 = float(588.00) - float(car1loanamountformatted.get()) / 60.00
         claimedcar1 = round(claimedcar1, 2)
         if claimedcar1 < 0:
             claimedcar1 = 0
         mtline13c = claimedcar1
         mtline13cformatted.set(mtline13c)
-        claimedcar2 = float(533.00) - float(car2loanamountformatted.get()) / 60.00
+        claimedcar2 = float(588.00) - float(car2loanamountformatted.get()) / 60.00
         claimedcar2 = round(claimedcar2, 2)
         if claimedcar2 < 0:
             claimedcar2 = 0
@@ -832,8 +834,8 @@ def form122c2():
         meanstestdeductions += mtline28
 
         mtline29 = float(mtline29formatted.get())
-        if mtline29 > (170.83 * float(householdunder18formatted.get())):
-            mtline29 = (170.83 * float(householdunder18formatted.get()))
+        if mtline29 > (189.58 * float(householdunder18formatted.get())):
+            mtline29 = (189.58 * float(householdunder18formatted.get()))
             mtline29formatted.set(mtline29)
         meanstestdeductions += mtline29
 
@@ -901,6 +903,8 @@ def form122c2():
         plancostcalcbutton.config(state="normal")
         return
 
+# Short-form means test function
+
 def form122c1():
     currentmonthlyincomeentry.config(state="normal")
     currentmonthlyincomelabel.config(state="normal")
@@ -946,6 +950,8 @@ def form122c1():
         meansteststatuslabel.config(background="green", text="BELOW MEDIAN")
     return
 
+# Monthly plan cost function
+
 def plancostcalc():
     commitmentperiod = float(comittmentperiodformatted.get())
     totalcramdownamount = 0.0
@@ -962,6 +968,9 @@ def plancostcalc():
     mdi = 0.00
     ch7 = 0.00
     toy = 0.00
+
+    presumptiveplanpayment = float(scheduleiline12formatted.get()) - float(schedulejline22cformatted.get())
+    presumptiveplanpaymentformatted.set(presumptiveplanpayment)
 
     ltdarrearscost = (float(firstmortgagearrearsformatted.get()) + float(secondmortgagearrearsformatted.get())) / 60.0
     planlongtermdebtarrearspaymentformatted.set(ltdarrearscost)
@@ -1158,12 +1167,9 @@ def plancostcalc():
     plantotalmonthlycostformatted.set(round(completemonthlytotal2, 2))
 
     unlock2()
-
-
-
-    
-
     return
+
+# Layout
 
 panel = ttk.Notebook(root)
 panel.grid(sticky=NW, column=0, row=0)
